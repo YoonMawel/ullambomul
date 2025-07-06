@@ -160,7 +160,11 @@ def handle_treasure_search(user, keyword, status_id, status):
         text = "출력 가능한 스크립트가 없습니다."
         print(f"[WARN] 스크립트 없음")
     else:
-        text = random.choice(all_scripts).replace("[보물]", "획득: 보물")
+        selected = random.choice(all_scripts)
+        if "[보물]" in selected:
+            text = f"{selected}\n획득: 보물"
+        else:
+            text = selected
         print(f"[DEBUG] 출력됨: {text}")
 
     mastodon.status_post(f"@{user}\n{text}", in_reply_to_id=status_id, visibility="unlisted")
