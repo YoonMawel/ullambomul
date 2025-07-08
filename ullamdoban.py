@@ -5,6 +5,7 @@ import json
 import random
 import threading
 import queue
+import pytz
 from datetime import datetime
 from mastodon import Mastodon, StreamListener
 import gspread
@@ -58,11 +59,19 @@ def is_help_keyword(keyword):
     return keyword.endswith("도움")
 
 def get_current_period():
-    now = datetime.now()
-    if now.date() == datetime(2025, 7, 8).date():
-        return "2025-07-08 오전" if now.hour < 12 else "2025-07-08 오후"
-    elif now.date() == datetime(2025, 7, 9).date():
+    KST = pytz.timezone("Asia/Seoul")
+    now = datetime.now(KST)
+
+    print(f"[DEBUG] 현재 KST 시각: {now.strftime('%Y-%m-%d %H:%M:%S')}")
+
+    if now.date() == datetime(2025, 7, 8, tzinfo=KST).date():
+        result = "2025-07-08 오전" if now.hour < 12 else "2025-07-08 오후"
+        print(f"[DEBUG] 시간대 판정 결과: {result}")
+        return result
+    elif now.date() == datetime(2025, 7, 9, tzinfo=KST).date():
+        print(f"[DEBUG] 시간대 판정 결과: 2025-07-09 오전")
         return "2025-07-09 오전"
+    print("[DEBUG] 현재 시간은 이벤트 대상 날짜가 아님")
     return None
 
 def already_participated(user, group):
