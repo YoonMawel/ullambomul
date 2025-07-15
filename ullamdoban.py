@@ -103,7 +103,7 @@ def add_gold(user, amount):
     sheet_inventory.update_cell(row_index, col, current + amount)
 
 def reward_given(keyword):
-    rewards = sheet_rewards.col_values(1)
+    rewards = [r.strip() for r in sheet_rewards.col_values(1)]  # strip() 추가
     return keyword in rewards
 
 def mark_reward_given(keyword):
