@@ -65,14 +65,15 @@ def keyword_usage_count(keyword):
 
 def previous_step_failed(current_step):
     logs = sheet_log.get_all_records()
-    for row in logs:
-        print("[DEBUG] row 내용:", row)
-        keyword = row.get('키워드')
-        step = EVENT_KEYWORDS.get(keyword, {}).get('step')
-        result = row.get('종류')
-        if step is not None and step < current_step and result == '실패':
-            return True
-    return False
+
+    for step in range(1, current_step):
+        found_success = any(
+            EVENT_KEYWORDS.get(row.get('키워드'), {}).get('step') == step and row.get('종류') == '성공'
+            for row in logs
+        )
+        if not found_success:
+            return True  # 이 단계에 성공한 사람이 아무도 없다면 실패로 간주
+    return False  # 모든 이전 단계에서 최소 1명 이상 성공 → 통과 가능
 
 def get_random_script(keyword):
     scripts = sheet_script.get_all_records()
