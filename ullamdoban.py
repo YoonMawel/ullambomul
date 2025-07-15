@@ -178,7 +178,7 @@ if __name__ == '__main__':
     me = masto.account_verify_credentials()
     print(f"[INFO] 로그인된 계정: @{me['acct']}")
 
-    for _ in range(5):
+    for _ in range(10):
         threading.Thread(target=worker, daemon=True).start()
 
     masto.stream_user(EventListener())
